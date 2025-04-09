@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Inter:wght@100..900&family=Noto+Sans+KR:wght@100..900&display=swap');
+
+.noto-sans-kr-900-normal {
+  font-family: "Noto Sans KR", serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.noto-sans-kr-600-normal {
+  font-family: "Noto Sans KR", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.noto-sans-kr-500-normal {
+    font-family: "Noto Sans KR", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+
+.noto-sans-kr-400-normal {
+  font-family: "Noto Sans KR", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.form-box {
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.08);
+}
+
+.required::before {
+  content: "*";
+  display: inline-block;
+  margin: 0 4px 0 0;
+}
+
+.required-box::after {
+  content: "*";
+  display: inline-block;
+  margin: 0 0 0 4px;
+  color: rgb(220 38 38 / var(--tw-text-opacity, 1));
+}
+
+.title {
+  font-size: 20px;
+}
+
+.description {
+  font-size: 15px;
+}
+
+.textarea {
+  font-size: 14.5px;
+  padding: 8px 13px;
+}
+
+@media screen and (max-width: 768px) {
+  .color-box {
+      height: 90px;
+  }
+}
