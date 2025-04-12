@@ -30,7 +30,7 @@ function Home() {
             params: {
               part: 'snippet',
               maxResults: 5,
-              q: query,
+              q: query + ' 가사',
               type: 'video',
               order: 'relevance',
               key: YOUTUBE_API_KEY,
