@@ -9,6 +9,8 @@ body {
   display: flex;
   justify-content: center;
   overflow: hidden;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .app-background::before {
