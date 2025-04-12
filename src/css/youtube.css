@@ -155,7 +155,7 @@ body {
 .gpt-response-text {
   color: #c9c9c9;
   font-size: 13px;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 @keyframes shimmer {
