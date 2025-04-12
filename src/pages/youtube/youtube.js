@@ -52,10 +52,47 @@ function Home() {
   const checkLyricsForInappropriateWords = async (title) => {
     try {
       const response = await client.responses.create({
-        model: 'gpt-4o',
-        instructions: `이 노래 가사에 fuck, sex, ni***, drunk, alcohol(술) 등등 이런 부적절한 단어( 초등학생이 들을 수 없는 단어가 포함되어 있으면 안됨 )가 있다면 '[부른사람 - 노래제목] 에는 부적절한 단어가 포함되어 있습니다.\n[부적절한 단어]\n설명'라고 말해. 없다면 '[부른사람 - 노래제목] 에는 부적절한 단어가 없습니다.' 라고만 말해. 만약에 가사를 찾을 수 없거나 다른 문제가 있다면 '에러: 가사를 확인중 오류가 발생했습니다.\n[오류 간단하게]'라고만 보내.`,
-        input: `${title} 이 노래의 가사에서 부적절한 단어가 들어가는지 확인 해줘.`,
-      })
+        model: "gpt-4o",
+        input: [
+          {
+            "role": "system",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "사용자가 노래 제목을 입력하면 그 노래의 가사에 부적절한 단어( sex, fuck, drunk, alcohol(술), ni*** 등등 )이 있으면 \"[부른사람 - 노래제목] 에는 부적절한 단어가 포함되어 있습니다.\\n[부적절한 단어] -, -\" 이렇게 보내고 없다면 \"[부른사람 - 노래제목] 에는 부적절한 단어가 없습니다.\"라고 보내고. 만약 노래 가사를 찾을 수 없다거나 다른 문제가 있다면 \"에러: 가사를 확인하는 중에 오류가 발생했습니다. [에러내용]\"라고 보내. 만약 노래 제목만 있거나 가수만 있다면 그 중 아무 노래나 골라서 알려줘. 부적절한 단어가 있는지 없는지만 딱 말해\n\n부적절한 단어 예시 - fuck, Brat, Bullshit, Buffoon"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": title
+              }
+            ]
+          }
+        ],
+        text: {
+          "format": {
+            "type": "text"
+          }
+        },
+        reasoning: {},
+        tools: [
+          {
+            "type": "web_search_preview",
+            "user_location": {
+              "type": "approximate"
+            },
+            "search_context_size": "medium"
+          }
+        ],
+        temperature: 1,
+        max_output_tokens: 2048,
+        top_p: 1,
+        store: true
+      });
 
       setGptResponse(response.output_text)
     } catch (error) {
