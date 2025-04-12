@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../css/youtube.css';
+import OpenAI from 'openai';
 
+const client = new OpenAI({ apiKey: process.env.REACT_APP_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
 const YOUTUBE_API_KEY = process.env.REACT_APP_API_KEY;
-const GPT_PROXY_URL = process.env.REACT_APP_GPT_PROXY;
 
 function Home() {
   const [query, setQuery] = useState('');
@@ -11,7 +12,7 @@ function Home() {
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
-	const [gptResponse, setGptResponse] = useState('');
+  const [gptResponse, setGptResponse] = useState('');
 
   useEffect(() => {
     if (query.trim() !== '') {
@@ -30,7 +31,6 @@ function Home() {
               part: 'snippet',
               maxResults: 5,
               q: query,
-              videoCategoryId: 10,
               type: 'video',
               order: 'relevance',
               key: YOUTUBE_API_KEY,
@@ -50,33 +50,31 @@ function Home() {
   }, [query]);
 
   const checkLyricsForInappropriateWords = async (title) => {
-		try {
-			const response = await axios.post(GPT_PROXY_URL, {
-				model: 'gpt-3.5-turbo',
-				messages: [
-					{
-						role: 'user',
-						content: `${title} 이 노래의 가사를 찾아서 이 가사에 욕설 또는 부적절한 단어가 들어가는지 확인 해줘. 그게 들어가 있다면 '[부적절한 가사가 들어간 노래제목(찾은 제목)]에는 부적절한 단어가 포함되어 있습니다.\n[부적절한 단어들]' 이런식으로 말해. 부적절한 단어가 없다면 '부적절한 단어가 없습니다.' 라고 말해.`,
-					},
-				],
-			});
+    try {
+      const response = await client.responses.create({
+        model: 'gpt-4o',
+        instructions: `이 노래 가사에 fuck, sex, ni***, drunk, alcohol(술) 등등 이런 부적절한 단어( 초등학생이 들을 수 없는 단어가 포함되어 있으면 안됨 )가 있다면 '[부른사람 - 노래제목] 에는 부적절한 단어가 포함되어 있습니다.\n[부적절한 단어]\n설명'라고 말해. 없다면 '[부른사람 - 노래제목] 에는 부적절한 단어가 없습니다.' 라고만 말해. 만약에 가사를 찾을 수 없거나 다른 문제가 있다면 '에러: 가사를 확인중 오류가 발생했습니다.\n[오류 간단하게]'라고만 보내.`,
+        input: `${title} 이 노래의 가사에서 부적절한 단어가 들어가는지 확인 해줘.`,
+      })
 
-			const reply = response.data.choices[0].message.content;
-			setGptResponse(reply);
-		} catch (error) {
-			console.error('Error checking lyrics:', error);
-			setGptResponse('Error checking lyrics');
-		}
-	};
+      setGptResponse(response.output_text)
+    } catch (error) {
+      console.error('Error checking lyrics:', error);
+      setGptResponse('Error checking lyrics');
+    }
+  };
 
-	const handleVideoSelect = async	(video) => {
-		setSelectedVideoId(video.id.videoId);
-		setGptResponse('가사에 욕설이 있는지 확인중이에요.')
-		await checkLyricsForInappropriateWords(video.snippet.title);
-	}
+  const handleVideoSelect = async (video) => {
+    setSelectedVideoId(video.id.videoId);
+    setGptResponse('가사에 부적절한 단어가 있는지 확인중이에요...');
+    await checkLyricsForInappropriateWords(video.snippet.title);
+  };
 
   return (
     <div className="app-background">
+      <head>
+        <title>노래 검색</title>
+      </head>
       <div className={`search-container ${isFocused ? 'focused' : ''}`}>
         <input
           type="text"
@@ -137,9 +135,15 @@ function Home() {
               allow="autoplay; encrypted-media"
               allowFullScreen
             ></iframe>
-						<div className="gpt-response">
-							{gptResponse}
-						</div>
+            <div className="gpt-response">
+              {gptResponse}
+
+              <ul className="gpt-response-text">
+                <li>
+                  * 해당 결과는 AI가 판단한 결과로 정확하지 않을 수 있습니다. 만약 오류가 발생했다면 다른 영상을 선택해 주세요.
+                </li>
+              </ul>
+            </div>
           </div>
         )}
       </div>

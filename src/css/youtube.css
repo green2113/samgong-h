@@ -76,7 +76,7 @@ body {
 
 .video-thumbnail {
   width: 80px;
-  height: 50px;
+  height: 45px;
   object-fit: cover;
   margin-right: 15px;
   border-radius: 4px;
@@ -95,6 +95,7 @@ body {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
+  line-clamp: 1;
   text-overflow: ellipsis;
 }
 
@@ -148,6 +149,14 @@ body {
   overflow: hidden;
 }
 
+.gpt-response {
+  color: #fff;
+}
+.gpt-response-text {
+  color: #c9c9c9;
+  font-size: 13px;
+  margin-top: 5px;
+}
 
 @keyframes shimmer {
   0% {
