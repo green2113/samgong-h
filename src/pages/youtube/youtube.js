@@ -55,7 +55,7 @@ function Home() {
         model: "gpt-4o",
         input: [
           {
-            "role": "system",
+            "role": "instructions",
             "content": [
               {
                 "type": "input_text",
@@ -168,7 +168,7 @@ function Home() {
               width="100%"
               height="250"
               src={`https://www.youtube.com/embed/${selectedVideoId}?autoplay=1`}
-              title="YouTube video player"
+              title="Youtube Video Player"
               allow="autoplay; encrypted-media"
               allowFullScreen
             ></iframe>
@@ -177,7 +177,7 @@ function Home() {
 
               <ul className="gpt-response-text">
                 <li>
-                  * 해당 결과는 AI가 판단한 결과로 정확하지 않을 수 있습니다. 만약 오류가 발생했다면 다른 영상을 선택해 주세요.
+                  * 해당 결과는 AI가 판단한 결과로 정확하지 않을 수 있습니다.<br />만약 오류가 발생했다면 다른 영상을 선택해 주세요.
                 </li>
               </ul>
             </div>
