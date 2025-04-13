@@ -13,6 +13,8 @@ function Home() {
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [gptResponse, setGptResponse] = useState('');
+  const [password, setPassword] = useState('');
+  const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
     if (query.trim() !== '') {
@@ -24,6 +26,7 @@ function Home() {
     }
 
     const delayDebounce = setTimeout(() => {
+      if(!authenticated) return;
       const fetchVideos = async () => {
         try {
           const response = await axios.get('https://www.googleapis.com/youtube/v3/search', {
@@ -47,7 +50,7 @@ function Home() {
     }, 1000);
 
     return () => clearTimeout(delayDebounce);
-  }, [query]);
+  }, [query, authenticated]);
 
   const checkLyricsForInappropriateWords = async (title) => {
     try {
@@ -112,6 +115,32 @@ function Home() {
       <head>
         <title>노래 검색</title>
       </head>
+
+      {!authenticated && (
+        <div className="auth-overlay">
+          <div className="auth-modal">
+            <h2>비밀번호 입력</h2>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호를 입력하세요"
+            />
+            <button
+              onClick={() => {
+                if (password === process.env.REACT_APP_YOUTUBE_PASSWORD) {
+                  setAuthenticated(true);
+                } else {
+                  alert('비밀번호가 틀렸습니다.');
+                }
+              }}
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className={`search-container ${isFocused ? 'focused' : ''}`}>
         <input
           type="text"
